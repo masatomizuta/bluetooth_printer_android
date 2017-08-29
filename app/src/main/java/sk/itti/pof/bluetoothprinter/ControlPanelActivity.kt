@@ -2,11 +2,10 @@ package sk.itti.pof.bluetoothprinter
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import javax.inject.Inject
 
-class ControlPanelActivity : AppCompatActivity() {
+class ControlPanelActivity : BaseActivity() {
+    override val TAG: String = "ControlPanelActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

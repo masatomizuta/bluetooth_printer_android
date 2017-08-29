@@ -12,4 +12,7 @@ import javax.inject.Singleton
 @Component(modules = arrayOf(ApplicationModule::class, BluetoothModule::class))
 interface PrinterComponent {
     fun inject(app: PrinterApplication)
+
+    fun inject(activity: ControlPanelActivity)
+    fun inject(activity: DeviceListActivity)
 }
