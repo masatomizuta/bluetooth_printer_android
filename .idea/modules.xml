@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/bluetooth_printer_android.iml" filepath="$PROJECT_DIR$/bluetooth_printer_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/itti-sample-bluetoothprinter.iml" filepath="$PROJECT_DIR$/itti-sample-bluetoothprinter.iml" />
       <module fileurl="file://C:\Programovanie\ITTI\Android\bluetooth_printer_android\itti-sample-bluetoothprinter.iml" filepath="C:\Programovanie\ITTI\Android\bluetooth_printer_android\itti-sample-bluetoothprinter.iml" />
     </modules>
   </component>
