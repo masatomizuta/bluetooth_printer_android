@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import javax.inject.Inject
 
 class ControlPanelActivity : AppCompatActivity() {
 

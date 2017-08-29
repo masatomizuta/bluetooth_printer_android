@@ -13,8 +13,12 @@ import com.polidea.rxandroidble.scan.ScanSettings
 import rx.Observable
 import rx.Observer
 import rx.Subscription
+import javax.inject.Inject
 
 class DeviceListActivity : AppCompatActivity() {
+
+    @Inject lateinit var application: PrinterApplication
+    @Inject lateinit var bluetoothClient: RxBleClient
 
 //    val TAG : String = "DeviceListActivity"
 //    val client = RxBleClient.create(this)!!
