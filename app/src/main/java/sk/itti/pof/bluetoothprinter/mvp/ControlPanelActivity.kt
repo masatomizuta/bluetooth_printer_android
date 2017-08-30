@@ -1,8 +1,9 @@
-package sk.itti.pof.bluetoothprinter
+package sk.itti.pof.bluetoothprinter.mvp
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import sk.itti.pof.bluetoothprinter.R
 
 class ControlPanelActivity : BaseActivity() {
     override val TAG: String = "ControlPanelActivity"
@@ -11,8 +12,4 @@ class ControlPanelActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_control_panel)
     }
-
-    //https://stackoverflow.com/a/44810606/2144352
-    fun Context.startControlPanelActivity() =
-            Intent(this, ControlPanelActivity::class.java).let(this::startActivity)
 }

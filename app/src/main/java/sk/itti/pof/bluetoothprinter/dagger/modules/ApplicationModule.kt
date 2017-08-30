@@ -1,4 +1,4 @@
-package sk.itti.pof.bluetoothprinter.modules
+package sk.itti.pof.bluetoothprinter.dagger.modules
 
 import android.content.Context
 import dagger.Module

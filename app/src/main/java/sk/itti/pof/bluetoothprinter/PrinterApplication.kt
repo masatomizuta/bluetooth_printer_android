@@ -2,8 +2,10 @@ package sk.itti.pof.bluetoothprinter
 
 import android.app.Application
 import android.os.StrictMode
-import sk.itti.pof.bluetoothprinter.modules.ApplicationModule
-import sk.itti.pof.bluetoothprinter.modules.BluetoothModule
+import sk.itti.pof.bluetoothprinter.dagger.components.DaggerPrinterComponent
+import sk.itti.pof.bluetoothprinter.dagger.components.PrinterComponent
+import sk.itti.pof.bluetoothprinter.dagger.modules.ApplicationModule
+import sk.itti.pof.bluetoothprinter.dagger.modules.BluetoothModule
 
 /**
  * Created by Tomas on 12/08/2017.

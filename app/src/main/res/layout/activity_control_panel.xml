@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="sk.itti.pof.bluetoothprinter.ControlPanelActivity">
+    tools:context="sk.itti.pof.bluetoothprinter.mvp.ControlPanelActivity">
 
     <TextView
         android:layout_width="wrap_content"

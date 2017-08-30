@@ -1,17 +1,21 @@
-package sk.itti.pof.bluetoothprinter
+package sk.itti.pof.bluetoothprinter.mvp
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import com.polidea.rxandroidble.RxBleClient
 import com.polidea.rxandroidble.scan.ScanFilter
 import com.polidea.rxandroidble.scan.ScanResult
 import com.polidea.rxandroidble.scan.ScanSettings
 import rx.Subscription
+import sk.itti.pof.bluetoothprinter.R
+import sk.itti.pof.bluetoothprinter.mvp.view.DeviceListView
 import javax.inject.Inject
 
-class DeviceListActivity : BaseActivity() {
+class DeviceListActivity : BaseActivity(), DeviceListView {
+
     override val TAG : String = "DeviceListActivity"
     @Inject lateinit var bluetoothClient: RxBleClient
 
@@ -46,6 +50,14 @@ class DeviceListActivity : BaseActivity() {
         super.onPause()
 
         subscribe.unsubscribe()
+    }
+
+    override fun updateScanningState(scanning: Boolean) {
+        Toast.makeText(this, scanning.toString(), Toast.LENGTH_LONG).show()
+    }
+
+    override fun navigateToDeviceDetail() {
+        startControlPanelActivity()
     }
 
     @Suppress("unused")
