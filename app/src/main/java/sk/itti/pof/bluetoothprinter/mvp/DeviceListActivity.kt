@@ -21,19 +21,22 @@ import javax.inject.Inject
 class DeviceListActivity : BaseActivity(), DeviceListView {
 
     override val TAG : String = "DeviceListActivity"
-    @Inject lateinit var bluetoothClient: RxBleClient
+//    @Inject lateinit var bluetoothClient: RxBleClient
 
-    private val settings: ScanSettings = ScanSettings.Builder()
-            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-            .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
-            .build()
+//    private val settings: ScanSettings = ScanSettings.Builder()
+//            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+//            .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
+//            .build()
+//
+//    private val observable: Observable<ScanResult> by lazy {
+//        bluetoothClient.scanBleDevices(settings, ScanFilter.empty())
+//                .distinct { t -> t.bleDevice.macAddress}
+//                .doOnUnsubscribe { runOnUiThread { updateScanningState(false) } }
+//                .doOnSubscribe { runOnUiThread { updateScanningState(true) } }
+//    }
 
-    private val observable: Observable<ScanResult> by lazy {
-        bluetoothClient.scanBleDevices(settings, ScanFilter.empty())
-                .distinct { t -> t.bleDevice.macAddress}
-                .doOnUnsubscribe { runOnUiThread { updateScanningState(false) } }
-                .doOnSubscribe { runOnUiThread { updateScanningState(true) } }
-    }
+    @Inject lateinit var scanObservable: Observable<ScanResult>
+    @Inject lateinit var stateObservable: Observable<RxBleClient.State>
 
     private var state: Subscription? = null
     private var subscribe: Subscription? = null
@@ -48,9 +51,7 @@ class DeviceListActivity : BaseActivity(), DeviceListView {
             startScanning()
         }
 
-        state = bluetoothClient.observeStateChanges()
-                .startWith(bluetoothClient.state)
-                .subscribe(
+        state = stateObservable.subscribe(
                         { state: RxBleClient.State? -> toast(state.toString()) },
                         { t: Throwable? -> toast(t.toString()) }
                 )
@@ -68,7 +69,9 @@ class DeviceListActivity : BaseActivity(), DeviceListView {
     }
 
     fun startScanning() {
-        subscribe = observable
+        subscribe = scanObservable
+                .doOnSubscribe { runOnUiThread { updateScanningState(true) } }
+                .doOnUnsubscribe { runOnUiThread { updateScanningState(false) } }
                 .take(10, TimeUnit.SECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe (
