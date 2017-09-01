@@ -13,3 +13,6 @@ class ControlPanelActivity : BaseActivity() {
         setContentView(R.layout.activity_control_panel)
     }
 }
+
+fun Context.startControlPanelActivity() =
+        Intent(this, DeviceListActivity::class.java).let(this::startActivity)

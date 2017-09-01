@@ -3,11 +3,8 @@ package sk.itti.pof.bluetoothprinter.mvp
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import com.polidea.rxandroidble.RxBleClient
-import com.polidea.rxandroidble.scan.ScanFilter
 import com.polidea.rxandroidble.scan.ScanResult
-import com.polidea.rxandroidble.scan.ScanSettings
 import kotlinx.android.synthetic.main.activity_device_list.*
 import rx.Observable
 import rx.Subscription
@@ -21,19 +18,7 @@ import javax.inject.Inject
 class DeviceListActivity : BaseActivity(), DeviceListView {
 
     override val TAG : String = "DeviceListActivity"
-//    @Inject lateinit var bluetoothClient: RxBleClient
-
-//    private val settings: ScanSettings = ScanSettings.Builder()
-//            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-//            .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
-//            .build()
-//
-//    private val observable: Observable<ScanResult> by lazy {
-//        bluetoothClient.scanBleDevices(settings, ScanFilter.empty())
-//                .distinct { t -> t.bleDevice.macAddress}
-//                .doOnUnsubscribe { runOnUiThread { updateScanningState(false) } }
-//                .doOnSubscribe { runOnUiThread { updateScanningState(true) } }
-//    }
+    private val SCAN_DURATION_SEC = 10
 
     @Inject lateinit var scanObservable: Observable<ScanResult>
     @Inject lateinit var stateObservable: Observable<RxBleClient.State>
@@ -50,15 +35,15 @@ class DeviceListActivity : BaseActivity(), DeviceListView {
         swipeRefreshLayout.setOnRefreshListener {
             startScanning()
         }
-
-        state = stateObservable.subscribe(
-                        { state: RxBleClient.State? -> toast(state.toString()) },
-                        { t: Throwable? -> toast(t.toString()) }
-                )
     }
 
     override fun onResume() {
         super.onResume()
+
+        state = stateObservable.subscribe(
+                { state: RxBleClient.State? -> toast(state.toString()) },
+                { t: Throwable? -> toast(t.toString()) }
+        )
     }
 
     override fun onPause() {
@@ -68,19 +53,21 @@ class DeviceListActivity : BaseActivity(), DeviceListView {
         state?.unsubscribe()
     }
 
-    fun startScanning() {
+    private fun startScanning() {
         subscribe = scanObservable
-                .doOnSubscribe { runOnUiThread { updateScanningState(true) } }
-                .doOnUnsubscribe { runOnUiThread { updateScanningState(false) } }
-                .take(10, TimeUnit.SECONDS)
+                .distinct { it.bleDevice.macAddress }
+                .unsubscribeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { updateScanningState(true) }
+                .doOnUnsubscribe { updateScanningState(false) }
+                .take(SCAN_DURATION_SEC.toLong(), TimeUnit.SECONDS)
                 .subscribe (
-                    {s: ScanResult? -> Log.d(TAG, s.toString()) },
-                    {e: Throwable? -> Log.e(TAG, e.toString()) }
+                    {s: ScanResult? -> toast(s.toString()) },
+                    {e: Throwable? -> toast(e.toString()) }
                 )
     }
 
-    fun stopScanning() {
+    private fun stopScanning() {
         subscribe?.unsubscribe()
         subscribe = null
     }
@@ -93,9 +80,8 @@ class DeviceListActivity : BaseActivity(), DeviceListView {
     override fun navigateToDeviceDetail() {
         startControlPanelActivity()
     }
-
-    @Suppress("unused")
-            //https://stackoverflow.com/a/44810606/2144352
-    fun Context.startDeviceListActivity() =
-            Intent(this, DeviceListActivity::class.java).let(this::startActivity)
 }
+
+//https://stackoverflow.com/a/44810606/2144352
+fun Context.startDeviceListActivity() =
+        Intent(this, DeviceListActivity::class.java).let(this::startActivity)

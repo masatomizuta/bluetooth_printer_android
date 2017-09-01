@@ -9,7 +9,9 @@ import dagger.Provides
 import javax.inject.Singleton
 
 /**
- * Created by SlaveMaster on 8/29/2017.
+ * Provide all necessary bluetooth configurations and observables for BLE.
+ *
+ * Created by Tomas Ivan on 8/29/2017.
  */
 @Module class BluetoothModule {
     @Provides @Singleton fun provideBluetooth(context: Context) =
@@ -17,16 +19,19 @@ import javax.inject.Singleton
 
     @Provides fun provideSettings() =
             ScanSettings.Builder()
-            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-            .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
-            .build()
+                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                    .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
+                    .build()!!
 
+    @Provides
     fun provideScanObservable(client: RxBleClient, settings: ScanSettings) =
-            client.scanBleDevices(settings, ScanFilter.empty())
+            client.scanBleDevices(settings, ScanFilter.empty())!!
 
-    @Provides fun provideScanObservableDistinctByMac(client: RxBleClient, settings: ScanSettings) =
-            provideScanObservable(client, settings).distinct({ result -> result.bleDevice.macAddress })
+//    @Provides
+//    @Named("scanDistinctObservable")
+//    fun provideScanObservableDistinctByMac(client: RxBleClient, settings: ScanSettings) =
+//            provideScanObservable(client, settings).distinct({ result -> result.bleDevice.macAddress })!!
 
     @Provides fun provideStateobservable(client: RxBleClient) =
-            client.observeStateChanges().startWith(client.state)
+            client.observeStateChanges().startWith(client.state)!!
 }
